@@ -60,14 +60,14 @@
 
           <div class="is-size-5 publication-authors">
             <span class="author-block">
-              <a href="https://ait.ethz.ch/people/zijian">Zijian Dong*</a><sup>1,2</sup>,</span>
+              <a href="https://ait.ethz.ch/people/zijian">Zijian Dong*</a><sup>1,4</sup>,</span>
             <span class="author-block">
-              <a href="https://www.linkedin.com/in/longteng-duan-566640205/?originalSubdomain=ch">Longteng Duan*</a><sup>1,3</sup>,</span>
+              <a href="https://www.linkedin.com/in/longteng-duan-566640205/?originalSubdomain=ch">Longteng Duan*</a><sup>1</sup>,</span>
             <span class="author-block">
               <a href="https://facultyprofiles.hkust-gz.edu.cn/faculty-personal-page/SONG-Jie/jsongroas">Jie Song</a><sup>3</sup>,
             </span>
             <span class="author-block">
-              <a href="https://ps.is.mpg.de/~black">Michael J. Black</a><sup>3</sup>,
+              <a href="https://ps.is.mpg.de/~black">Michael J. Black</a><sup>4</sup>,
             </span>
             <span class="author-block">
               <a href="http://www.cvlibs.net/">Andreas Geiger</a><sup>2</sup>
@@ -78,7 +78,8 @@
             <span class="author-block"><sup>1</sup>ETH Zurich,</span>
             <span class="author-block"><sup>2</sup>University of Tubingen,</span>
             <br>
-            <span class="author-block"><sup>3</sup>Max Planck Institute for Intelligent Systems, Tubingen
+            <span class="author-block"><sup>3</sup>HKUST(GZ)&HKUST,</span>
+            <span class="author-block"><sup>4</sup>Max Planck Institute for Intelligent Systems, Tubingen
             </span>
           </div>
 
@@ -149,15 +150,15 @@
         <img src="assets/teaser.png"  class="center"/>
       <h2 class="subtitle has-text-centered">
       
-Learned from 2D image collections, AG3D synthesizes novel 3D humans with high-quality appearance and geometry, different identities and clothing
-styles including loose clothing such as skirts. 
-      
+We propose MoGA, a method to genereate high-fidelity Gaussian avatars from a single image. Given a challenging in-the-wild
+image, MoGA enables 3D consistent full-body novel view synthesis and detailed geometry extraction. Our reconstructed Gaussian avatar supports animation without any post-processing.
+
       </h2>
     </div>
   </div>
 </section>
 
-<section class="hero teaser">
+<!-- <section class="hero teaser">
   <div class="container is-max-desktop">
     <div class="hero-body">
       <video id="teaser" autoplay muted loop height="100%">
@@ -169,7 +170,7 @@ AG3D enables smooth interpolation between identities while capturing loose cloth
       </h2>
     </div>
   </div>
-</section>
+</section> -->
 
 
 
@@ -227,20 +228,16 @@ AG3D enables smooth interpolation between identities while capturing loose cloth
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
-          <p>
-            While progress in 2D generative models of human appearance has been rapid, many applications require 3D avatars that can be animated and rendered. Unfortunately, most existing methods for learning generative models of 3D humans with diverse shape and appearance require 3D training data, which is limited and expensive to acquire. 
-The key to progress is hence to learn generative models of 3D avatars from abundant unstructured 2D image collections. 
-However, learning realistic and complete 3D appearance and geometry in this under-constrained setting remains challenging, especially in the presence of loose clothing such as dresses.
-          </p>
-          <p>
-            In this paper, we propose a new adversarial generative model of realistic 3D people from 2D images. 
-            Our method captures shape and deformation of the body and loose clothing by adopting a holistic 3D generator and integrating an efficient and flexible articulation module. 
-            To improve realism, we train our model using multiple discriminators while also integrating geometric cues in the form of predicted 2D normal maps. 
-          </p>
-          <p>
-            We experimentally find that our method outperforms previous 3D- and articulation-aware methods in terms of geometry and appearance. 
-            We validate the effectiveness of our model and the importance of each component via systematic ablation studies.
-          </p>
+          
+          We present MoGA, a novel method to reconstruct high-fidelity 3D Gaussian avatars from a single-view image. 
+          The main challenge lies in inferring unseen appearance and geometric details while ensuring 3D consistency and realism. 
+          Most previous methods rely on 2D diffusion models to synthesize unseen views; however, these generated views are sparse and inconsistent, resulting in unrealistic 3D artifacts and blurred appearance.
+          To address these limitations, we leverage a generative avatar model, that can generate diverse 3D avatars by sampling deformed Gaussians from a learned prior distribution.
+          Due to the limited amount of 3D training data such a 3D model alone cannot capture all image details of unseen identities.
+          Consequently, we integrate it as a prior, ensuring 3D consistency by projecting input images into its latent space and enforcing additional 3D appearance and geometric constraints.
+          Our novel approach formulates Gaussian avatar creation as a model inversion process by fitting the generative avatar to synthetic views from 2D diffusion models.
+          The generative avatar provides a meaningful initialization for model fitting, enforces 3D regularization, and helps in refining pose estimation.
+          Experiments show that our method surpasses state-of-the-art techniques and generalizes well to real-world scenarios. Our Gaussian avatars are also inherently animatable. 
         </div>
       </div>
     </div>
@@ -251,7 +248,7 @@ However, learning realistic and complete 3D appearance and geometry in this unde
       <div class="column is-four-fifths">
         <h2 class="title is-3">Video</h2>
         <div class="publication-video">
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/niP1YhJXEBE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/J6C8j77oiLM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
       </div>
     </div>
@@ -260,784 +257,493 @@ However, learning realistic and complete 3D appearance and geometry in this unde
 </section>
 
 
+
 <section class="section" id="method">
   <div class="container is-max-desktop content">
     <h2 class="title">Method Overview</h2>
-    <img src="assets/method_pipeline.png"  height="250" class="center"/>
+    <img src="assets/pipeline.png"  height="250" class="center"/>
     <p>
-    Instead of representing humans with separate body parts, we adopt a monolithic approach that is able to model the human body as well as loose clothing, while adding multiple
-    discriminators that increase the fidelity of perceptually important regions and improve geometric details.
+      The key of our method is to leverage a generative 3D avatar model as a human prior and fit this generative model to
+      synthetic images generated from multi-view diffusion.
     </p>
 
-    <h3 class="title">Holistic Human Generation and Deformation</h3>
+    <h3 class="title">Generative Avatar Prior Learning</h3>
       <p>
-        We model the appearance and geometry of 3D humans holistically in a canonical space using a monolithic 3D generator and an efficient tri-plane representation. To enable fast volume rendering, we
-        adapt the efficient articulation module, Fast-SNARF, to our generative setting and further accelerate rendering via empty-space skipping, informed by a coarse human body
-        prior. Finally, the rendered images are lift to high-resolution images.  
+        Our 3D human generator creates the appearance and geometry in canonical space represented by 3D Gaussians and leverages an efficient deformation module to deform it into posed space for Gaussian rasterization. To learn this generative avatar model from 3D human dataset, we utilize a single-stage training pipeline that jointly optimizes a Gaussian auto-decoder (including a per-subject latent code and a shared decoder) and a latent diffusion model.
       </p>
 
-      <h3 class="title">Modular 2D Discriminators</h3>
+      <h3 class="title">Model Fitting</h3>
       <p>
-        We propose multiple discriminators to improve geometric detail as well as the
-        perceptually-important face region as we found that a single
-        adversarial loss on rendered images is insufficient to recover
-        meaningful 3D geometry in such a highly under-constrained
-        setting.  In addition
-        to an image discriminator operating on the images, we improve geometry by introducing a normal discriminator that compares
-        our rendered normal maps with the normals of real images predicted by an off-the-shelf normal estimator. To further improve
-        the quality of the perceptually important face region, we add normal and image discriminators for the face region.
+        At test time, we fit the learned generative avatar to synthetic images generated from a pretrained multi-view diffusion model. During this process, we first initialize latent code by image-guided sampling and perform model inversion to compute latent code while freezing the decoder and learned diffusion model. Both the avatar model and camera/human pose parameters are optimized in an alternating manner to correct abnormal poses.
       </p>
   </div>
 </section>
-
-
 
 
 <section class="section" id="result">
   <div class="container is-max-desktop content">
-    <h2 class="title">Result</h2>
     
-    <h3 class="title">Rotation</h3>
+    <h2 class="title">Result on in-the-wild images </h2>
+    
+    <h3 class="title">Examples with background</h3>
 
     <div class="container is-max-desktop content">
-      <h4 class="title">Generated samples on DeepFashion</h4>
-    
-      <section class="hero is-light is-small">
-    
-    
-      <div class="hero-body">
-        <div class="container">
-          <div id="results-carousel" class="carousel results-carousel">
-            <!-- <div class="item item-steve">
-              <video poster="" autoplay controls muted loop height="100%">
-                <source src="https://ait.ethz.ch/projects/2022/gdna/downloads/assets/sample1_crop.mp4" type="video/mp4">
-              </video>
-            </div> -->
-
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/deepfashion/02_color.gif">
-                    <img src="assets/deepfashion/02_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-            
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/deepfashion/05_color.gif">
-                    <img src="assets/deepfashion/05_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-
-            
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/deepfashion/11_color.gif">
-                    <img src="assets/deepfashion/11_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/deepfashion/04_color.gif">
-                    <img src="assets/deepfashion/04_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-            
-            
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/deepfashion/07_color.gif">
-                    <img src="assets/deepfashion/07_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-            
-
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/deepfashion/06_color.gif">
-                    <img src="assets/deepfashion/06_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/deepfashion/09_color.gif">
-                    <img src="assets/deepfashion/09_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-           
-
-
-            
-
-  
-            
-          </div>
-        </div>
-      </div>
-      </section>
-    </div>
-
-
-    <div class="container is-max-desktop content">
-      <h4 class="title">Generated 360&deg samples on UBCFashion</h4>
-
-      <section class="hero is-light is-small">
-    
-    
-      <div class="hero-body">
-        <div class="container">
-          <div id="results-carousel" class="carousel results-carousel">
-            <!-- <div class="item item-steve">
-              <video poster="" autoplay controls muted loop height="100%">
-                <source src="https://ait.ethz.ch/projects/2022/gdna/downloads/assets/sample1_crop.mp4" type="video/mp4">
-              </video>
-            </div> -->
-            
-            
-           
-
-
-            
-
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/ubcfashion/11_color.gif">
-                    <img src="assets/ubcfashion/11_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-            
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/ubcfashion/04_color.gif">
-                    <img src="assets/ubcfashion/04_geo.gif">
-                </div>
-            </div>
-            
-
-            </div>
-
-
-
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/ubcfashion/03_color.gif">
-                    <img src="assets/ubcfashion/03_geo.gif">
-                </div>
-            </div>
-            
-
-            </div>
       
-            
-
-            
-
-
-            
-
+    
+    <section class="hero is-light is-small">
+    
+      <div class="hero-body">
+        <div class="container">
+          <div id="results-carousel" class="carousel results-carousel">
+          
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/background/0027.png" style="height:300px; width:auto;"/>
+            </div>
             <div class="item item-chair-tp">
-  
   
               <div style="padding:0px">
                 <div class="b-dics" style="width: 300px">
-                    <img src="assets/ubcfashion/07_color.gif">
-                    <img src="assets/ubcfashion/07_geo.gif">
+                    <img src="assets/background/0027_color.gif">
+                    <img src="assets/background/0027_mesh.gif">
                 </div>
             </div>
-            
             </div>
 
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/background/0038.png" style="height:300px; width:auto;"/>
+            </div>
             <div class="item item-chair-tp">
-  
   
               <div style="padding:0px">
                 <div class="b-dics" style="width: 300px">
-                    <img src="assets/ubcfashion/05_color.gif">
-                    <img src="assets/ubcfashion/05_geo.gif">
+                    <img src="assets/background/0038_color.gif">
+                    <img src="assets/background/0038_mesh.gif">
                 </div>
             </div>
-            
             </div>
 
-  
-
-  
-  
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/background/0022.png" style="height:300px; width:auto;"/>
+            </div>
             <div class="item item-chair-tp">
-  
   
               <div style="padding:0px">
                 <div class="b-dics" style="width: 300px">
-                    <img src="assets/ubcfashion/09_color.gif">
-                    <img src="assets/ubcfashion/09_geo.gif">
+                    <img src="assets/background/0022_color.gif">
+                    <img src="assets/background/0022_mesh.gif">
                 </div>
             </div>
-            
             </div>
-  
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/background/0044.png" style="height:300px; width:auto;"/>
+            </div>
             <div class="item item-chair-tp">
-  
   
               <div style="padding:0px">
                 <div class="b-dics" style="width: 300px">
-                    <img src="assets/ubcfashion/20_color.gif">
-                    <img src="assets/ubcfashion/20_geo.gif">
+                    <img src="assets/background/0044_color.gif">
+                    <img src="assets/background/0044_mesh.gif">
                 </div>
             </div>
-            
+            </div>
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/background/0047.png" style="height:300px; width:auto;"/>
+            </div>
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/background/0047_color.gif">
+                    <img src="assets/background/0047_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/background/0059.png" style="height:300px; width:auto;"/>
+            </div>
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/background/0059_color.gif">
+                    <img src="assets/background/0059_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/background/0039.png" style="height:300px; width:auto;"/>
+            </div>
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/background/0039_color.gif">
+                    <img src="assets/background/0039_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      </section>
+    </div>
+    
+
+    <div class="container is-max-desktop content"></div>
+    <h3 class="title">Examples with loose clothing</h3>
+
+    <div class="container is-max-desktop content">
+      <section class="hero is-light is-small">
+    
+      <div class="hero-body">
+        <div class="container">
+          <div id="results-carousel" class="carousel results-carousel">
+          
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/loose_clothing/0034.png" style="height:300px; width:auto;"/>
             </div>
             
-           
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/loose_clothing/0034_color.gif">
+                    <img src="assets/loose_clothing/0034_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/loose_clothing/0006.png" style="height:300px; width:auto;"/>
+            </div>
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/loose_clothing/0006_color.gif">
+                    <img src="assets/loose_clothing/0006_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/loose_clothing/0055.png" style="height:300px; width:auto;"/>
+            </div>
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/loose_clothing/0055_color.gif">
+                    <img src="assets/loose_clothing/0055_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/loose_clothing/0011.png" style="height:300px; width:auto;"/>
+            </div>
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/loose_clothing/0011_color.gif">
+                    <img src="assets/loose_clothing/0011_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/loose_clothing/0028.png" style="height:300px; width:auto;"/>
+            </div>
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/loose_clothing/0028_color.gif">
+                    <img src="assets/loose_clothing/0028_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/loose_clothing/0000.png" style="height:300px; width:auto;"/>
+            </div>
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/loose_clothing/0000_color.gif">
+                    <img src="assets/loose_clothing/0000_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+                
           </div>
         </div>
       </div>
       </section>
     </div>
 
-  
+    <div class="container is-max-desktop content"></div>
+    <h3 class="title">Examples with challenging poses</h3>
 
-  <div class="container is-max-desktop content">
+    <div class="container is-max-desktop content">
+      <section class="hero is-light is-small">
     
+      <div class="hero-body">
+        <div class="container">
+          <div id="results-carousel" class="carousel results-carousel">
+          
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/challenging_pose/0064.png" style="height:300px; width:auto;"/>
+            </div>
+            
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/challenging_pose/0064_color.gif">
+                    <img src="assets/challenging_pose/0064_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/challenging_pose/0079.png" style="height:300px; width:auto;"/>
+            </div>
+            
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/challenging_pose/0079_color.gif">
+                    <img src="assets/challenging_pose/0079_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/challenging_pose/0048.png" style="height:300px; width:auto;"/>
+            </div>
+            
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/challenging_pose/0048_color.gif">
+                    <img src="assets/challenging_pose/0048_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+            
+
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/challenging_pose/0043.png" style="height:300px; width:auto;"/>
+            </div>
+            
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/challenging_pose/0043_color.gif">
+                    <img src="assets/challenging_pose/0043_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/challenging_pose/0031.png" style="height:300px; width:auto;"/>
+            </div>
+            
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/challenging_pose/0031_color.gif">
+                    <img src="assets/challenging_pose/0031_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/challenging_pose/0036.png" style="height:300px; width:auto;"/>
+            </div>
+            
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/challenging_pose/0036_color.gif">
+                    <img src="assets/challenging_pose/0036_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/challenging_pose/0025.png" style="height:300px; width:auto;"/>
+            </div>
+            
+            <div class="item item-chair-tp">
+  
+              <div style="padding:0px">
+                <div class="b-dics" style="width: 300px">
+                    <img src="assets/challenging_pose/0025_color.gif">
+                    <img src="assets/challenging_pose/0025_mesh.gif">
+                </div>
+            </div>
+            </div>
+
+
+
+
+
+ 
+
+
+          </div>
+        </div>
+      </div>
+      </section>
+    </div>
+
+
+    <div class="container is-max-desktop content"></div>
     <h3 class="title">Animation</h3>
-    
+
     <div class="container is-max-desktop content">
-      <h4 class="title">Walking</h4>
       <section class="hero is-light is-small">
-    
     
       <div class="hero-body">
         <div class="container">
           <div id="results-carousel" class="carousel results-carousel">
-            <!-- <div class="item item-steve">
-              <video poster="" autoplay controls muted loop height="100%">
-                <source src="https://ait.ethz.ch/projects/2022/gdna/downloads/assets/sample1_crop.mp4" type="video/mp4">
-              </video>
-            </div> -->
-  
-           
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/walking/ubcfashion/04_color.gif">
-                    <img src="assets/walking/ubcfashion/04_geo.gif">
-                </div>
+          
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/animation/0000.jpg" style="height:300px; width:auto;"/>
             </div>
-            
-            </div>
-
             
             <div class="item item-chair-tp">
   
-  
               <div style="padding:0px">
                 <div class="b-dics" style="width: 300px">
-                    <img src="assets/walking/ubcfashion/09_color.gif">
-                    <img src="assets/walking/ubcfashion/09_geo.gif">
-                </div>
+                    <img src="assets/animation/0000_1.gif">
+                   
             </div>
-            
-            </div>
-
-           
+          </div>
+          </div>
 
             <div class="item item-chair-tp">
   
-  
               <div style="padding:0px">
                 <div class="b-dics" style="width: 300px">
-                    <img src="assets/walking/deepfashion/02_color.gif">
-                    <img src="assets/walking/deepfashion/02_geo.gif">
-                </div>
+                    <img src="assets/animation/0000_2.gif">
+                   
             </div>
-            
-            </div>
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/walking/deepfashion/04_color.gif">
-                    <img src="assets/walking/deepfashion/04_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-
-            
-
-
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/walking/ubcfashion/02_color.gif">
-                    <img src="assets/walking/ubcfashion/02_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/walking/deepfashion/05_color.gif">
-                    <img src="assets/walking/deepfashion/05_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-
-
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/walking/deepfashion/06_color.gif">
-                    <img src="assets/walking/deepfashion/06_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-   
-  
-     
-  
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/walking/ubcfashion/07_color.gif">
-                    <img src="assets/walking/ubcfashion/07_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-
-     
-  
-       
-            
-           
           </div>
         </div>
-      </div>
-      </section>
-    </div>
-
-
-    <div class="container is-max-desktop content">
-      <h4 class="title">Crossed Arm</h4>
-      <section class="hero is-light is-small">
-    
-    
-      <div class="hero-body">
-        <div class="container">
-          <div id="results-carousel" class="carousel results-carousel">
-            <!-- <div class="item item-steve">
-              <video poster="" autoplay controls muted loop height="100%">
-                <source src="https://ait.ethz.ch/projects/2022/gdna/downloads/assets/sample1_crop.mp4" type="video/mp4">
-              </video>
-            </div> -->
-  
-            
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/crossed_arm/deepfashion/01_color.gif">
-                    <img src="assets/crossed_arm/deepfashion/01_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/crossed_arm/deepfashion/08_color.gif">
-                    <img src="assets/crossed_arm/deepfashion/08_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-
-            
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/crossed_arm/ubcfashion/05_color.gif">
-                    <img src="assets/crossed_arm/ubcfashion/05_geo.gif">
-                </div>
-            </div>
-            
-            </div>
 
             <div class="item item-chair-tp">
   
-  
               <div style="padding:0px">
                 <div class="b-dics" style="width: 300px">
-                    <img src="assets/crossed_arm/ubcfashion/01_color.gif">
-                    <img src="assets/crossed_arm/ubcfashion/01_geo.gif">
-                </div>
+                    <img src="assets/animation/0000_3.gif">
+                   
             </div>
-            
             </div>
-  
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/crossed_arm/deepfashion/03_color.gif">
-                    <img src="assets/crossed_arm/deepfashion/03_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/crossed_arm/ubcfashion/03_color.gif">
-                    <img src="assets/crossed_arm/ubcfashion/03_geo.gif">
-                </div>
-            </div>
-            
-            </div>
+          </div>
 
+
+            <div class="item item-steve render_wrapper_small" style="text-align: center;">
+              <img src="assets/animation/0001.jpg" style="height:300px; width:auto;"/>
+            </div>
+            
             <div class="item item-chair-tp">
-  
   
               <div style="padding:0px">
                 <div class="b-dics" style="width: 300px">
-                    <img src="assets/crossed_arm/ubcfashion/06_color.gif">
-                    <img src="assets/crossed_arm/ubcfashion/06_geo.gif">
-                </div>
+                    <img src="assets/animation/0001_1.gif">
+                   
             </div>
-            
-            </div>
+          </div>
+          </div>
+
+          <div class="item item-chair-tp">
   
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/crossed_arm/ubcfashion/08_color.gif">
-                    <img src="assets/crossed_arm/ubcfashion/08_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-            
-           
+            <div style="padding:0px">
+              <div class="b-dics" style="width: 300px">
+                  <img src="assets/animation/0001_2.gif">
+                 
           </div>
         </div>
-      </div>
-      </section>
-    </div>
-
-
-
-    <div class="container is-max-desktop content">
-      <h4 class="title">High Knees</h4>
-      <section class="hero is-light is-small">
-    
-    
-      <div class="hero-body">
-        <div class="container">
-          <div id="results-carousel" class="carousel results-carousel">
-            <!-- <div class="item item-steve">
-              <video poster="" autoplay controls muted loop height="100%">
-                <source src="https://ait.ethz.ch/projects/2022/gdna/downloads/assets/sample1_crop.mp4" type="video/mp4">
-              </video>
-            </div> -->
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/high_knees/ubcfashion/04_color.gif">
-                    <img src="assets/high_knees/ubcfashion/04_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-            
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/high_knees/deepfashion/01_color.gif">
-                    <img src="assets/high_knees/deepfashion/01_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/high_knees/ubcfashion/01_color.gif">
-                    <img src="assets/high_knees/ubcfashion/01_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/high_knees/ubcfashion/05_color.gif">
-                    <img src="assets/high_knees/ubcfashion/05_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/high_knees/deepfashion/03_color.gif">
-                    <img src="assets/high_knees/deepfashion/03_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/high_knees/ubcfashion/03_color.gif">
-                    <img src="assets/high_knees/ubcfashion/03_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-
-
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/high_knees/deepfashion/00_color.gif">
-                    <img src="assets/high_knees/deepfashion/00_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/high_knees/ubcfashion/08_color.gif">
-                    <img src="assets/high_knees/ubcfashion/08_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-            
-           
-          </div>
         </div>
-      </div>
-      </section>
-    </div>
 
+        <div class="item item-steve render_wrapper_small" style="text-align: center;">
+          <img src="assets/animation/0002.png" style="height:300px; width:auto;"/>
+        </div>
+        
+        <div class="item item-chair-tp">
+
+          <div style="padding:0px">
+            <div class="b-dics" style="width: 300px">
+                <img src="assets/animation/0002_1.gif">
+               
+        </div>
+        </div>
+        </div>
+
+        <div class="item item-chair-tp">
+
+          <div style="padding:0px">
+            <div class="b-dics" style="width: 300px">
+                <img src="assets/animation/0002_2.gif">
+              
+        </div>
+        </div>
+        </div>
+
+
+        <div class="item item-steve render_wrapper_small" style="text-align: center;">
+          <img src="assets/animation/0003.png" style="height:300px; width:auto;"/>
+        </div>
+        
+        <div class="item item-chair-tp">
+
+          <div style="padding:0px">
+            <div class="b-dics" style="width: 300px">
+                <img src="assets/animation/0003_1.gif">
+              
+        </div>
+        </div>
+        </div>
+
+        <div class="item item-chair-tp">
+
+          <div style="padding:0px">
+            <div class="b-dics" style="width: 300px">
+                <img src="assets/animation/0003_2.gif">
+              
+        </div>
+        </div>
+        </div>
+
+        
+            
+      </div>
+    </div>
   </div>
+  </section>
+</div>
 
-
-
-
-
-
-
-  <div class="container is-max-desktop content">
-    <h3 class="title">Interpolation</h3>
-
-
-    <div class="container is-max-desktop content">
-      <section class="hero is-light is-small">
-    
-    
-      <div class="hero-body">
-        <div class="container">
-          <div id="results-carousel" class="carousel results-carousel">
-            <!-- <div class="item item-steve">
-              <video poster="" autoplay controls muted loop height="100%">
-                <source src="https://ait.ethz.ch/projects/2022/gdna/downloads/assets/sample1_crop.mp4" type="video/mp4">
-              </video>
-            </div> -->
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/interpolation/00_color.gif">
-                    <img src="assets/interpolation/00_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-            
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/interpolation/01_color.gif" >
-                    <img src="assets/interpolation/01_geo.gif" >
-                </div>
-            </div>
-            
-            </div>
-
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/interpolation/03_color.gif">
-                    <img src="assets/interpolation/03_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/interpolation/04_color.gif">
-                    <img src="assets/interpolation/04_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-            <div class="item item-chair-tp">
-  
-  
-              <div style="padding:0px">
-                <div class="b-dics" style="width: 300px">
-                    <img src="assets/interpolation/05_color.gif">
-                    <img src="assets/interpolation/05_geo.gif">
-                </div>
-            </div>
-            
-            </div>
-  
-
-
-
-
-            
-           
-          </div>
-        </div>
-      </div>
-      </section>
-    </div>
-
-  </div>
-
-
-  
-
-</section>
 
 
 
@@ -1064,11 +770,12 @@ However, learning realistic and complete 3D appearance and geometry in this unde
 <section class="section" id="BibTeX">
   <div class="container is-max-desktop content">
     <h2 class="title">BibTeX</h2>
-    <pre><code>@inproceedings{dong2023ag3d,
-      title={{AG3D}: Learning to Generate {3D} Avatars from {2D} Image Collections},
-      author={Zijian Dong, Xu Chen, Jinlong Yang, Michael J.Black, Otmar Hilliges, Andreas Geiger},
+    <pre><code>@inproceedings{dong2025moga,
+      title={{MoGA}: 3D {G}enerative {A}vatar {P}rior for {M}onocular {G}aussian {A}vatar
+      {R}econstruction},
+      author={Zijian Dong, Longteng Duan, Jie Song, Michael J.Black, Andreas Geiger},
       booktitle={International Conference on Computer Vision (ICCV)},
-      year={2023}
+      year={2025}
     }</code></pre>
   </div>
 </section>
